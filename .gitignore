@@ -1,0 +1,5 @@
+# Images
+*.jpg
+*.png
+# JetBrains IDE settings
+.idea/
