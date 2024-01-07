@@ -2,6 +2,8 @@
 
 from PIL import Image, ImageDraw, ImageFont
 import argparse
+import os
+
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -54,12 +56,15 @@ parser.add_argument('-b', '--bottom_text', type=str, default='', help='The text 
 parser.add_argument('output_image', type=str, help='The path where the output image will be saved.')
 args = parser.parse_args()
 
+script_path = os.path.abspath(__file__)
+script_dir = os.path.dirname(script_path)
+
 input_image = args.input_image
 image = Image.open(input_image)
 width, height = image.size
 draw = ImageDraw.Draw(image)
 font_size = width // 10
-font = ImageFont.truetype('impact.ttf', size=font_size)
+font = ImageFont.truetype(script_dir+'/memeg_res/impact.ttf', size=font_size)
 
 top_text = args.top_text
 top_text, top_text_width, top_text_height = process_line(top_text, font)
