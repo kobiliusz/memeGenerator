@@ -63,18 +63,18 @@ input_image = args.input_image
 image = Image.open(input_image)
 width, height = image.size
 draw = ImageDraw.Draw(image)
-font_size = width // 10
+font_size = min(width, height) // 10
 font = ImageFont.truetype(script_dir+'/memeg_res/impact.ttf', size=font_size)
 
 top_text = args.top_text
 top_text, top_text_width, top_text_height = process_line(top_text, font)
-top_text_position = ((width - top_text_width) // 2, width // 20)
+top_text_position = ((width - top_text_width) // 2, min(width, height) // 20)
 draw.text(top_text_position, top_text, fill=WHITE, font=font, stroke_width=font_size // 10, stroke_fill=BLACK,
           align="center")
 
 bottom_text = args.bottom_text
 bottom_text, bottom_text_width, bottom_text_height = process_line(bottom_text, font)
-bottom_text_position = ((width - bottom_text_width) // 2, height - width // 20 - bottom_text_height)
+bottom_text_position = ((width - bottom_text_width) // 2, height - min(width, height) // 20 - bottom_text_height)
 draw.text(bottom_text_position, bottom_text, fill=WHITE, font=font, stroke_width=font_size // 10, stroke_fill=BLACK,
           align="center")
 
