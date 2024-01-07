@@ -54,12 +54,25 @@ def process_part(part_text, text_font):
     return part_text, text_width, text_height
 
 
+def confirm_overwrite(filename):
+    while True:
+        response = input(f"Are you sure you want to overwrite {filename}? (yes/no): ").strip().lower()
+        if response in ['yes', 'y']:
+            return True
+        elif response in ['no', 'n']:
+            return False
+
+
 parser = argparse.ArgumentParser(description='Add text to the top and bottom of an image.')
 parser.add_argument('input_image', type=str, help='The path to the input image file.')
 parser.add_argument('-t', '--top_text', type=str, default='', help='The text to add to the top of the image.')
 parser.add_argument('-b', '--bottom_text', type=str, default='', help='The text to add to the bottom of the image.')
 parser.add_argument('output_image', type=str, help='The path where the output image will be saved.')
 args = parser.parse_args()
+
+output_image = args.output_image
+if os.path.exists(output_image) and not confirm_overwrite(output_image):
+    exit(-1)
 
 script_path = os.path.abspath(__file__)
 script_dir = os.path.dirname(script_path)
@@ -83,5 +96,4 @@ bottom_text_position = ((width - bottom_text_width) // 2, height - min(width, he
 draw.text(bottom_text_position, bottom_text, fill=WHITE, font=font, stroke_width=font_size // 10, stroke_fill=BLACK,
           align="center")
 
-output_image = args.output_image
 image.save(output_image)
