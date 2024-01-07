@@ -30,23 +30,28 @@ def replace_char(text: str, index: int, new_char: chr) -> str:
     return ''.join(char_list)
 
 
-def process_line(line_text, text_font):
-    line_text = line_text.strip().upper()
-    text_width, text_height = draw.textsize(line_text, font=text_font)
+def process_part(part_text, text_font):
+    part_text = part_text.strip().upper()
+    text_width, text_height = draw.textsize(part_text, font=text_font)
     done_split = True
 
     while text_width > width and done_split:
         done_split = False
-        lines = []
-        for line in line_text.split('\n'):
-            if (split_index := find_best_space(line)) > 0:
-                done_split = True
-                line = replace_char(line, split_index, '\n')
-            lines.append(line)
-        line_text = '\n'.join(lines)
-        text_width, text_height = draw.textsize(line_text, font=text_font)
+        widest = 0
+        widest_index = 0
+        lines = part_text.split('\n')
+        for idx, line in enumerate(lines):
+            line_width, _ = draw.textsize(line, font=text_font)
+            if line_width > widest:
+                widest_index = idx
+                widest = line_width
+        if (split_index := find_best_space(lines[widest_index])) > 0:
+            done_split = True
+            lines[widest_index] = replace_char(lines[widest_index], split_index, '\n')
+        part_text = '\n'.join(lines)
+        text_width, text_height = draw.textsize(part_text, font=text_font)
 
-    return line_text, text_width, text_height
+    return part_text, text_width, text_height
 
 
 parser = argparse.ArgumentParser(description='Add text to the top and bottom of an image.')
@@ -67,14 +72,14 @@ font_size = min(width, height) // 10
 font = ImageFont.truetype(script_dir+'/memeg_res/impact.ttf', size=font_size)
 
 top_text = args.top_text
-top_text, top_text_width, top_text_height = process_line(top_text, font)
+top_text, top_text_width, top_text_height = process_part(top_text, font)
 top_text_position = ((width - top_text_width) // 2, min(width, height) // 20)
 draw.text(top_text_position, top_text, fill=WHITE, font=font, stroke_width=font_size // 10, stroke_fill=BLACK,
           align="center")
 
 bottom_text = args.bottom_text
-bottom_text, bottom_text_width, bottom_text_height = process_line(bottom_text, font)
-bottom_text_position = ((width - bottom_text_width) // 2, height - min(width, height) // 20 - bottom_text_height)
+bottom_text, bottom_text_width, bottom_text_height = process_part(bottom_text, font)
+bottom_text_position = ((width - bottom_text_width) // 2, height - min(width, height) // 20 - bottom_text_height * 1.1)
 draw.text(bottom_text_position, bottom_text, fill=WHITE, font=font, stroke_width=font_size // 10, stroke_fill=BLACK,
           align="center")
 
