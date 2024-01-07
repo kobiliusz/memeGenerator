@@ -30,12 +30,12 @@ def replace_char(text: str, index: int, new_char: chr) -> str:
     return ''.join(char_list)
 
 
-def process_part(part_text, text_font):
+def process_part(part_text, text_font, img_width):
     part_text = part_text.strip().upper()
     text_width, text_height = draw.textsize(part_text, font=text_font)
     done_split = True
 
-    while text_width > width and done_split:
+    while text_width > img_width and done_split:
         done_split = False
         widest = 0
         widest_index = 0
@@ -85,13 +85,13 @@ font_size = min(width, height) // 15
 font = ImageFont.truetype(script_dir+'/memeg_res/impact.ttf', size=font_size)
 
 top_text = args.top_text
-top_text, top_text_width, top_text_height = process_part(top_text, font)
+top_text, top_text_width, top_text_height = process_part(top_text, font, width)
 top_text_position = ((width - top_text_width) // 2, min(width, height) // 20)
 draw.text(top_text_position, top_text, fill=WHITE, font=font, stroke_width=font_size // 10, stroke_fill=BLACK,
           align="center")
 
 bottom_text = args.bottom_text
-bottom_text, bottom_text_width, bottom_text_height = process_part(bottom_text, font)
+bottom_text, bottom_text_width, bottom_text_height = process_part(bottom_text, font, width)
 bottom_text_position = ((width - bottom_text_width) // 2, height - min(width, height) // 20 - bottom_text_height * 1.1)
 draw.text(bottom_text_position, bottom_text, fill=WHITE, font=font, stroke_width=font_size // 10, stroke_fill=BLACK,
           align="center")
