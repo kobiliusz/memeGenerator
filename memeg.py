@@ -30,9 +30,9 @@ def replace_char(text: str, index: int, new_char: chr) -> str:
     return ''.join(char_list)
 
 
-def process_part(part_text, text_font, img_width):
+def process_part(part_text, text_font, img_width, draw_object):
     part_text = part_text.strip().upper()
-    text_width, text_height = draw.textsize(part_text, font=text_font)
+    text_width, text_height = draw_object.textsize(part_text, font=text_font)
     done_split = True
 
     while text_width > img_width and done_split:
@@ -41,7 +41,7 @@ def process_part(part_text, text_font, img_width):
         widest_index = 0
         lines = part_text.split('\n')
         for idx, line in enumerate(lines):
-            line_width, _ = draw.textsize(line, font=text_font)
+            line_width, _ = draw_object.textsize(line, font=text_font)
             if line_width > widest:
                 widest_index = idx
                 widest = line_width
@@ -49,7 +49,7 @@ def process_part(part_text, text_font, img_width):
             done_split = True
             lines[widest_index] = replace_char(lines[widest_index], split_index, '\n')
         part_text = '\n'.join(lines)
-        text_width, text_height = draw.textsize(part_text, font=text_font)
+        text_width, text_height = draw_object.textsize(part_text, font=text_font)
 
     return part_text, text_width, text_height
 
@@ -83,17 +83,18 @@ width, height = image.size
 draw = ImageDraw.Draw(image)
 font_size = min(width, height) // 15
 font = ImageFont.truetype(script_dir+'/memeg_res/impact.ttf', size=font_size)
+border_size = font_size // 10
 
 top_text = args.top_text
-top_text, top_text_width, top_text_height = process_part(top_text, font, width)
+top_text, top_text_width, top_text_height = process_part(top_text, font, width, draw)
 top_text_position = ((width - top_text_width) // 2, min(width, height) // 20)
-draw.text(top_text_position, top_text, fill=WHITE, font=font, stroke_width=font_size // 10, stroke_fill=BLACK,
+draw.text(top_text_position, top_text, fill=WHITE, font=font, stroke_width=border_size, stroke_fill=BLACK,
           align="center")
 
 bottom_text = args.bottom_text
-bottom_text, bottom_text_width, bottom_text_height = process_part(bottom_text, font, width)
+bottom_text, bottom_text_width, bottom_text_height = process_part(bottom_text, font, width, draw)
 bottom_text_position = ((width - bottom_text_width) // 2, height - min(width, height) // 20 - bottom_text_height * 1.1)
-draw.text(bottom_text_position, bottom_text, fill=WHITE, font=font, stroke_width=font_size // 10, stroke_fill=BLACK,
+draw.text(bottom_text_position, bottom_text, fill=WHITE, font=font, stroke_width=border_size, stroke_fill=BLACK,
           align="center")
 
 image.save(output_image)
