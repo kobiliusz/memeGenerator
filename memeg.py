@@ -68,7 +68,7 @@ input_image = args.input_image
 image = Image.open(input_image)
 width, height = image.size
 draw = ImageDraw.Draw(image)
-font_size = min(width, height) // 10
+font_size = min(width, height) // 15
 font = ImageFont.truetype(script_dir+'/memeg_res/impact.ttf', size=font_size)
 
 top_text = args.top_text
